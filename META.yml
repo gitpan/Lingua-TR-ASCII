@@ -1,0 +1,30 @@
+---
+abstract: '(De)asciify Turkish texts.'
+author:
+  - 'Burak Gursoy <burak@cpan.org>'
+build_requires:
+  Test::More: 0.40
+configure_requires:
+  Module::Build: 0.36
+generated_by: 'Module::Build version 0.3607'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Lingua-TR-ASCII
+no_index:
+  directory:
+    - monolithic_version
+    - builder
+    - t
+provides:
+  Lingua::TR::ASCII:
+    file: lib/Lingua/TR/ASCII.pm
+    version: 0.10
+  Lingua::TR::ASCII::Data:
+    file: lib/Lingua/TR/ASCII/Data.pm
+    version: 0.10
+resources:
+  license: http://dev.perl.org/licenses/
+  repository: http://bitbucket.org/burak/cpan-lingua-tr-ascii/
+version: 0.10
