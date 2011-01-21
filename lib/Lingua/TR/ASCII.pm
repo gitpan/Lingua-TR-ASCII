@@ -5,11 +5,12 @@ use utf8;
 use base qw( Exporter );
 use Lingua::TR::ASCII::Data;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 our @EXPORT  = qw( ascii_to_turkish turkish_to_ascii );
 
 sub ascii_to_turkish {
     my($str) = @_;
+    return $str if ! $str;
     return __PACKAGE__->_new( $str )->_deasciify;
 }
 
@@ -18,65 +19,57 @@ sub turkish_to_ascii {
 }
 
 sub _new {
-    my($class, $ascii_string) = @_;
+    my($class, $input) = @_;
     my $self = {
-        ascii_string   => $ascii_string,
-        turkish_string => $ascii_string,
+        input   => $input,
+        length  => length $input,
+        turkish => $input,
     };
     bless $self, $class;
     return $self;
 }
 
+# Convert a string with ASCII-only letters into one with Turkish letters.
 sub _deasciify {
     my($self) = @_;
-    # Convert a string with ASCII-only letters into one with
-    # Turkish letters.
-    my @chars = split m{}xms, $self->{turkish_string};
+    my $s     = \$self->{turkish};
+    my @chars = split m{}xms, ${$s};
 
     for my $i ( 0 .. $#chars ) {
         my $c = $chars[$i];
-        if ( $self->_needs_correction( $c, $i ) ) {
-            substr $self->{turkish_string}, $i, 1, $TOGGLE_ACCENT->{ $c } || $c;
-        }
+        next if ! $self->_needs_correction( $c, $i );
+        substr ${$s}, $i, 1, $TOGGLE_ACCENT->{ $c } || $c;
     }
 
-    return $self->{turkish_string};
+    return ${$s};
 }
 
+# Determine if char at cursor needs correction.
 sub _needs_correction {
     my($self, $ch, $point) = @_;
-    $point ||= 0;
-    # Determine if char at cursor needs correction.
     my $tr = $ASCIIFY->{ $ch } || $ch;
     my $pl = $PATTERN->{ lc $tr };
-    my $m  = $pl ? $self->_matches($pl, $point) : 0;
+    my $m  = $pl ? $self->_matches( $pl, $point || 0 ) : 0;
 
-    return $tr eq 'I'
-                ? ( $ch eq $tr ? ! $m :   $m )
-                : ( $ch eq $tr ?   $m : ! $m )
-                ;
+    return $tr eq 'I' ? ( $ch eq $tr ? ! $m :   $m )
+                      : ( $ch eq $tr ?   $m : ! $m );
 }
 
+# Check if the pattern is in the pattern table.
 sub _matches {
     my($self, $dlist, $point) = @_;
-    $point ||= 0;
-    # Check if the pattern is in the pattern table.
-    my $rank  = 2 * keys %{ $dlist };
-    my $str   = $self->_get_context( $point );
-    my $start = 0;
-    my $end   = 0;
+    my $str  = $self->_get_context( $point || 0 );
+    my $rank = 2 * keys %{ $dlist };
+    my $len  = length $str;
+    my($start, $end);
 
-    my $_len = length $str;
-
-    while ( $start <= CONTEXT_SIZE ) {
-        $end = 1 + CONTEXT_SIZE;
-        while ( $end <= $_len ) {
+    while ( $start++ <= CONTEXT_SIZE ) {
+        $end = CONTEXT_SIZE;
+        while ( ++$end <= $len ) {
             my $s = substr $str, $start, $end - $start;
-            my $r = $dlist->{ $s };
-            $rank = $r if $r && abs $r < abs $rank;
-            $end++;
+            my $r = $dlist->{ $s } || next;
+            $rank = $r if abs $r < abs $rank;
         }
-        $start++;
     }
 
     return $rank > 0;
@@ -85,57 +78,44 @@ sub _matches {
 sub _get_context {
     my($self, $point, $size) = @_;
     $size ||= CONTEXT_SIZE;
-    my $s = q{ } x ( 1 + ( 2 * $size ) );
+    my($s, $i, $space, $index);
+
+    my $morph = sub {
+        my($next, $lookup) = @_;
+        $space = 0;
+        while ( $next->() ) {
+            my $char = substr $self->{turkish}, $index, 1;
+            my $x    = $lookup->{ $char };
+            if ( $x ) {
+                substr $s, abs $i, 1, $x;
+                $space = 0;
+                $i++;
+                next;
+            }
+            next if $space;
+            $space = 1;
+            $i++;
+        }
+    };
+
+    $s     = q{ } x ( 1 + ( 2 * $size ) );
+    $i     = 1 + $size;
+    $index = $point;
     substr $s, $size, 1, 'X';
 
-    my $i       = 1 + $size;
-    my $index   = $point;
-    my $space;
-
-    my $current_char = substr $self->{turkish_string}, $index, 1;
-
-    $index++;
-
-    while ( $i < length($s) && ! $space && $index < length($self->{ascii_string}) ) {
-        $current_char = substr $self->{turkish_string}, $index, 1;
-        my $x = $DOWNCASE_ASCIIFY->{ $current_char };
-        if ( ! $x ) {
-            if ( ! $space ) {
-                $i++;
-                $space = 1;
-            }
-        }
-        else {
-            substr $s, $i, 1, $x;
-            $i++;
-            $space = 0;
-        }
-        $index++;
-    }
+    $morph->(
+        sub { $i < length $s && ! $space && ++$index < $self->{length} },
+        $DOWNCASE_ASCIIFY
+    );
 
     $s     = substr $s, 0, $i;
+    $i     = 0 - --$size;
     $index = $point;
-    $i     = $size - 1;
-    $space = 0;
-    $index--;
 
-    while ( $i >= 0 && $index >= 0 ) {
-        $current_char = substr $self->{turkish_string}, $index, 1;
-        my $x = $UPCASE_ACCENTS->{ $current_char };
-
-        if ( ! $x ) {
-            if ( ! $space ) {
-                $i--;
-                $space = 1;
-            }
-        }
-        else {
-            substr $s, $i, 1, $x;
-            $i--;
-            $space = 0;
-        }
-        $index--;
-    }
+    $morph->(
+        sub { $i <= 0 && --$index >= 0 },
+        $UPCASE_ACCENTS
+    );
 
     return $s;
 }
@@ -159,13 +139,13 @@ Lingua::TR::ASCII - (De)asciify Turkish texts.
 
 =head1 DESCRIPTION
 
-This document describes version C<0.10> of C<Lingua::TR::ASCII>
-released on C<19 January 2011>.
+This document describes version C<0.11> of C<Lingua::TR::ASCII>
+released on C<21 January 2011>.
 
 If you try to write Turkish with a non-Turkish keyboard (assuming you
 can't change the layout or can't touch-type) this'll result with the
 ascii-fication of the Turkish characters and this actually results
-with bogus text since the text you wrote is not literally Turkish
+with bogus text since the text you wrote is not literally Turkish anymore
 (although the Turkish speaking people and search engines will most
 likely understand it). And in some cases, ascii-fication of some sentences
 might result with funny words. This module tries to mitigate this problem
@@ -199,6 +179,10 @@ L<http://www.denizyuret.com/2006/11/emacs-turkish-mode.html>.
 
 =over 4
 
+=item Java
+
+L<http://code.google.com/p/turkish-deasciifier>
+
 =item JavaScript
 
 L<http://turkce-karakter.appspot.com>
@@ -210,10 +194,6 @@ L<https://github.com/emres/turkish-deasciifier>
 =item Ruby
 
 L<https://github.com/berkerpeksag/ruby-turkish-deasciifier>.
-
-=item Java
-
-L<http://code.google.com/p/turkish-deasciifier>
 
 =back
 

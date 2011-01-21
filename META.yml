@@ -20,11 +20,11 @@ no_index:
 provides:
   Lingua::TR::ASCII:
     file: lib/Lingua/TR/ASCII.pm
-    version: 0.10
+    version: 0.11
   Lingua::TR::ASCII::Data:
     file: lib/Lingua/TR/ASCII/Data.pm
-    version: 0.10
+    version: 0.11
 resources:
   license: http://dev.perl.org/licenses/
   repository: http://bitbucket.org/burak/cpan-lingua-tr-ascii/
-version: 0.10
+version: 0.11

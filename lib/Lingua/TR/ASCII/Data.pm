@@ -5,7 +5,7 @@ use base qw(Exporter);
 use utf8;
 use constant CONTEXT_SIZE => 10;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 our @EXPORT = qw(
     $PATTERN
@@ -3416,8 +3416,8 @@ None.
 
 =head1 DESCRIPTION
 
-This document describes version C<0.10> of C<Lingua::TR::ASCII::Data>
-released on C<19 January 2011>.
+This document describes version C<0.11> of C<Lingua::TR::ASCII::Data>
+released on C<21 January 2011>.
 
 Private module.
 
