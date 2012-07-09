@@ -5,7 +5,7 @@ use utf8;
 use base qw( Exporter );
 use Lingua::TR::ASCII::Data;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 our @EXPORT  = qw( ascii_to_turkish turkish_to_ascii );
 
 sub ascii_to_turkish {
@@ -15,7 +15,10 @@ sub ascii_to_turkish {
 }
 
 sub turkish_to_ascii {
-    die "Unimplemented\n";
+    my($str, $encoding) = @_;
+    require Text::Unidecode;
+    use utf8;
+    return Text::Unidecode::unidecode( $str );
 }
 
 sub _new {
@@ -82,6 +85,7 @@ sub _get_context {
 
     my $morph = sub {
         my($next, $lookup) = @_;
+        $index = $point;
         $space = 0;
         while ( $next->() ) {
             my $char = substr $self->{turkish}, $index, 1;
@@ -98,9 +102,8 @@ sub _get_context {
         }
     };
 
-    $s     = q{ } x ( 1 + ( 2 * $size ) );
-    $i     = 1 + $size;
-    $index = $point;
+    $s = q{ } x ( 1 + ( 2 * $size ) );
+    $i = 1 + $size;
     substr $s, $size, 1, 'X';
 
     $morph->(
@@ -108,9 +111,8 @@ sub _get_context {
         $DOWNCASE_ASCIIFY
     );
 
-    $s     = substr $s, 0, $i;
-    $i     = 0 - --$size;
-    $index = $point;
+    $s = substr $s, 0, $i;
+    $i = 0 - --$size;
 
     $morph->(
         sub { $i <= 0 && --$index >= 0 },
@@ -139,8 +141,8 @@ Lingua::TR::ASCII - (De)asciify Turkish texts.
 
 =head1 DESCRIPTION
 
-This document describes version C<0.11> of C<Lingua::TR::ASCII>
-released on C<21 January 2011>.
+This document describes version C<0.12> of C<Lingua::TR::ASCII>
+released on C<9 July 2012>.
 
 If you try to write Turkish with a non-Turkish keyboard (assuming you
 can't change the layout or can't touch-type) this'll result with the
@@ -159,17 +161,19 @@ This module is based on the previous Python and Ruby implementations.
 
 =head1 FUNCTIONS
 
-=head2 ascii_to_turkish
+=head2 ascii_to_turkish STRING
 
 Converts (corrects) the supplied string into Turkish.
 
-=head2 turkish_to_ascii
+=head2 turkish_to_ascii STRING
 
-Not yet implemented.
+Converts the supplied C<STRING> into an ascii equivalent.
+This function is a wrapper around L<Text::Unidecode>.
 
 =head1 SEE ALSO
 
 L<Lingua::DE::ASCII>,
+L<Text::Unidecode>,
 L<http://ileriseviye.org/blog/?tag=turkish-deasciifier>,
 L<http://www.denizyuret.com/2006/11/emacs-turkish-mode.html>.
 
@@ -213,12 +217,11 @@ Burak Gursoy <burak@cpan.org>.
 
 =head1 COPYRIGHT
 
-Copyright 2011 Burak Gursoy. All rights reserved.
+Copyright 2011 - 2012 Burak Gursoy. All rights reserved.
 
 =head1 LICENSE
 
-This library is free software; you can redistribute it and/or modify 
-it under the same terms as Perl itself, either Perl version 5.12.1 or, 
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.12.3 or,
 at your option, any later version of Perl 5 you may have available.
-
 =cut

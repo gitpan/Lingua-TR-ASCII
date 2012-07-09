@@ -5,7 +5,7 @@ use base qw(Exporter);
 use utf8;
 use constant CONTEXT_SIZE => 10;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 our @EXPORT = qw(
     $PATTERN
@@ -3416,8 +3416,8 @@ None.
 
 =head1 DESCRIPTION
 
-This document describes version C<0.11> of C<Lingua::TR::ASCII::Data>
-released on C<21 January 2011>.
+This document describes version C<0.12> of C<Lingua::TR::ASCII::Data>
+released on C<9 July 2012>.
 
 Private module.
 
@@ -3431,12 +3431,11 @@ Burak Gursoy <burak@cpan.org>.
 
 =head1 COPYRIGHT
 
-Copyright 2011 Burak Gursoy. All rights reserved.
+Copyright 2011 - 2012 Burak Gursoy. All rights reserved.
 
 =head1 LICENSE
 
-This library is free software; you can redistribute it and/or modify 
-it under the same terms as Perl itself, either Perl version 5.12.1 or, 
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.12.3 or,
 at your option, any later version of Perl 5 you may have available.
-
 =cut

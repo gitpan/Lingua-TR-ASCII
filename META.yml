@@ -5,8 +5,9 @@ author:
 build_requires:
   Test::More: 0.40
 configure_requires:
-  Module::Build: 0.36
-generated_by: 'Module::Build version 0.3607'
+  Module::Build: 0.40
+dynamic_config: 1
+generated_by: 'Module::Build version 0.4001, CPAN::Meta::Converter version 2.120921'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -20,11 +21,13 @@ no_index:
 provides:
   Lingua::TR::ASCII:
     file: lib/Lingua/TR/ASCII.pm
-    version: 0.11
+    version: 0.12
   Lingua::TR::ASCII::Data:
     file: lib/Lingua/TR/ASCII/Data.pm
-    version: 0.11
+    version: 0.12
+requires:
+  Text::Unidecode: 0.04
 resources:
   license: http://dev.perl.org/licenses/
   repository: http://bitbucket.org/burak/cpan-lingua-tr-ascii/
-version: 0.11
+version: 0.12

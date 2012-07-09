@@ -1,10 +1,16 @@
-use 5.006;
 {
     module_name => 'Lingua::TR::ASCII',
-    requires    => {},
+    requires    => {
+        'Text::Unidecode' => '0.04',
+    },
     meta_merge  => {
         resources => {
             repository => 'http://bitbucket.org/burak/cpan-lingua-tr-ascii/',
         },
+    },
+    BUILDER => {
+        change_versions                  => 1,
+        copyright_first_year             => '2011',
+        add_pod_author_copyright_license => 1,
     },
 }
