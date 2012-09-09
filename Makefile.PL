@@ -9,13 +9,7 @@ use ExtUtils::MakeMaker;
 
 my %spec = mm_spec;
 
-if (0) {
-    my $eok = eval <<'THIS_IS_SOME_IDENTIFIER';
 
-THIS_IS_SOME_IDENTIFIER
-
-    die "Error compiling initialization_hook: $@\n" if $@;
-}
 
 WriteMakefile(
     NAME         => $spec{module_name},

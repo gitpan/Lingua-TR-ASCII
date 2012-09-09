@@ -18,16 +18,17 @@ no_index:
     - monolithic_version
     - builder
     - t
+    - xt
 provides:
   Lingua::TR::ASCII:
     file: lib/Lingua/TR/ASCII.pm
-    version: 0.12
+    version: 0.13
   Lingua::TR::ASCII::Data:
     file: lib/Lingua/TR/ASCII/Data.pm
-    version: 0.12
+    version: 0.13
 requires:
   Text::Unidecode: 0.04
 resources:
   license: http://dev.perl.org/licenses/
   repository: http://bitbucket.org/burak/cpan-lingua-tr-ascii/
-version: 0.12
+version: 0.13

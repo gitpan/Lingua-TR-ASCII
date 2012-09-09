@@ -5,7 +5,7 @@ use base qw(Exporter);
 use utf8;
 use constant CONTEXT_SIZE => 10;
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 our @EXPORT = qw(
     $PATTERN
@@ -3406,6 +3406,8 @@ __END__
 
 =pod
 
+=encoding utf8
+
 =head1 NAME
 
 Lingua::TR::ASCII::Data - Data sets for Lingua::TR::ASCII
@@ -3416,8 +3418,8 @@ None.
 
 =head1 DESCRIPTION
 
-This document describes version C<0.12> of C<Lingua::TR::ASCII::Data>
-released on C<9 July 2012>.
+This document describes version C<0.13> of C<Lingua::TR::ASCII::Data>
+released on C<9 September 2012>.
 
 Private module.
 

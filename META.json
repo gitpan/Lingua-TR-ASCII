@@ -17,7 +17,8 @@
       "directory" : [
          "monolithic_version",
          "builder",
-         "t"
+         "t",
+         "xt"
       ]
    },
    "prereqs" : {
@@ -40,11 +41,11 @@
    "provides" : {
       "Lingua::TR::ASCII" : {
          "file" : "lib/Lingua/TR/ASCII.pm",
-         "version" : "0.12"
+         "version" : "0.13"
       },
       "Lingua::TR::ASCII::Data" : {
          "file" : "lib/Lingua/TR/ASCII/Data.pm",
-         "version" : "0.12"
+         "version" : "0.13"
       }
    },
    "release_status" : "stable",
@@ -56,5 +57,5 @@
          "url" : "http://bitbucket.org/burak/cpan-lingua-tr-ascii/"
       }
    },
-   "version" : "0.12"
+   "version" : "0.13"
 }

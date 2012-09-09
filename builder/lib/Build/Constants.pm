@@ -27,6 +27,7 @@ use constant NO_INDEX => qw(
     monolithic_version
     builder
     t
+    xt
 );
 use constant DEFAULTS => qw(
    license          perl

@@ -521,12 +521,20 @@ sub _add_vanilla_makefile_pl {
 sub _vanilla_makefile_pl {
     my $self = shift;
     my $hook = $self->initialization_hook;
+
+    if ( $hook ) {
+        $hook = $self->_compile_template(
+                    'tools/Makefile.PL.hook' => {
+                        hook => $hook,
+                    },
+                ),
+    }
+
     return join q{},
                 $self->_automatic_build_file_header,
                 $self->_compile_template(
                     'tools/Makefile.PL' => {
-                        hook     => $hook,
-                        has_hook => $hook ? 1 : 0,
+                        hook => $hook || q{},
                     },
                 ),
             ;
